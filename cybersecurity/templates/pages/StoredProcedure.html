@@ -1,0 +1,81 @@
+{% extends "account/base.html" %}
+{% block head_title %}"Stored Procedure"{% endblock %}
+
+{% block content %}
+<style type="text/css">
+span {
+	font-family: 'Courier New';
+	font-size: 10pt;
+	color: #000000;
+}
+.sc0 {
+}
+.sc4 {
+	color: #FF8000;
+}
+.sc5 {
+	font-weight: bold;
+	color: #0000FF;
+}
+.sc7 {
+	color: #808080;
+}
+.sc10 {
+	font-weight: bold;
+	color: #000080;
+}
+.sc11 {
+}
+.sc19 {
+	color: #800080;
+}
+</style>
+
+<div style="float: left; white-space: pre; line-height: 1; background: #FFFFFF; "><span class="sc5">CREATE</span><span class="sc0"> </span><span class="sc5">OR</span><span class="sc0"> </span><span class="sc5">REPLACE</span><span class="sc0"> </span><span class="sc5">FUNCTION</span><span class="sc0"> </span><span class="sc11">products_by_payment</span><span class="sc10">(</span><span class="sc11">month_arg</span><span class="sc0"> </span><span class="sc19">date</span><span class="sc10">,</span><span class="sc11">payment_arg</span><span class="sc0"> </span><span class="sc19">text</span><span class="sc10">,</span><span class="sc0"> </span><span class="sc11">results_arg</span><span class="sc0"> </span><span class="sc19">integer</span><span class="sc10">)</span><span class="sc0">
+  </span><span class="sc5">RETURNS</span><span class="sc0"> </span><span class="sc5">TABLE</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">product</span><span class="sc0">   </span><span class="sc19">varchar</span><span class="sc0">
+               </span><span class="sc10">,</span><span class="sc0"> </span><span class="sc11">payment_method</span><span class="sc0">   </span><span class="sc19">varchar</span><span class="sc0">
+               </span><span class="sc10">,</span><span class="sc0"> </span><span class="sc11">created_at</span><span class="sc0"> </span><span class="sc11">timestamptz</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc5">AS</span><span class="sc0">
+$</span><span class="sc11">func</span><span class="sc0">$
+</span><span class="sc5">BEGIN</span><span class="sc0">
+   </span><span class="sc5">RETURN</span><span class="sc0"> </span><span class="sc11">QUERY</span><span class="sc0">
+    </span><span class="sc5">select</span><span class="sc0"> </span><span class="sc11">pr</span><span class="sc10">.</span><span class="sc11">name</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">product</span><span class="sc10">,</span><span class="sc0">
+    </span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">payment_method</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">payment_method</span><span class="sc10">,</span><span class="sc0">
+    </span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">created_at</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">created_at</span><span class="sc0">
+    </span><span class="sc5">from</span><span class="sc0"> </span><span class="sc11">tema2_product</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">pr</span><span class="sc0">
+    </span><span class="sc5">INNER</span><span class="sc0"> </span><span class="sc5">join</span><span class="sc0"> </span><span class="sc11">tema2_invoiceproduct</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">ip</span><span class="sc0"> </span><span class="sc5">on</span><span class="sc0"> </span><span class="sc11">pr</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc10">=</span><span class="sc11">ip</span><span class="sc10">.</span><span class="sc11">fk_product_id_id</span><span class="sc0">
+    </span><span class="sc5">inner</span><span class="sc0"> </span><span class="sc5">join</span><span class="sc0"> </span><span class="sc11">tema2_invoice</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">inv</span><span class="sc0"> </span><span class="sc5">on</span><span class="sc0"> </span><span class="sc11">ip</span><span class="sc10">.</span><span class="sc11">fk_invoice_id_id</span><span class="sc10">=</span><span class="sc11">inv</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc0">
+    </span><span class="sc5">inner</span><span class="sc0"> </span><span class="sc5">join</span><span class="sc0"> </span><span class="sc11">tema2_purchases</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">pch</span><span class="sc0"> </span><span class="sc5">on</span><span class="sc0"> </span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">fk_invoice_id_id</span><span class="sc10">=</span><span class="sc11">inv</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc0">
+    </span><span class="sc5">where</span><span class="sc0"> </span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">created_at</span><span class="sc10">=</span><span class="sc11">month_arg</span><span class="sc0"> </span><span class="sc5">and</span><span class="sc0"> </span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">payment_method</span><span class="sc10">=</span><span class="sc11">payment_arg</span><span class="sc0">
+    </span><span class="sc5">fetch</span><span class="sc0"> </span><span class="sc5">first</span><span class="sc0"> </span><span class="sc11">results_Arg</span><span class="sc0"> </span><span class="sc5">rows</span><span class="sc0"> </span><span class="sc5">only</span><span class="sc10">;</span><span class="sc0">
+</span><span class="sc5">END</span><span class="sc0">
+$</span><span class="sc11">func</span><span class="sc0">$  </span><span class="sc5">LANGUAGE</span><span class="sc0"> </span><span class="sc11">plpgsql</span><span class="sc10">;</span><span class="sc0">
+
+<p></p>
+  <span class="p">(</span><span class="s2">&quot;*****************************************************************&quot;</span><span class="p">)</span>
+
+</span><span class="sc5">SELECT</span><span class="sc0"> </span><span class="sc10">*</span><span class="sc0"> </span><span class="sc5">FROM</span><span class="sc0"> </span><span class="sc11">products_by_payment</span><span class="sc10">(</span><span class="sc7">'2020-11-01'</span><span class="sc10">,</span><span class="sc7">'paypal'</span><span class="sc10">,</span><span class="sc4">100</span><span class="sc10">);</span><span class="sc0">
+
+</span><span class="sc5">CREATE</span><span class="sc0"> </span><span class="sc5">OR</span><span class="sc0"> </span><span class="sc5">REPLACE</span><span class="sc0"> </span><span class="sc5">FUNCTION</span><span class="sc0"> </span><span class="sc11">sales_no_tax</span><span class="sc10">(</span><span class="sc11">date_arg</span><span class="sc0"> </span><span class="sc19">date</span><span class="sc10">,</span><span class="sc0"> </span><span class="sc11">tax_arg</span><span class="sc0"> </span><span class="sc19">integer</span><span class="sc10">)</span><span class="sc0">
+  </span><span class="sc5">RETURNS</span><span class="sc0"> </span><span class="sc5">TABLE</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc5">user_id</span><span class="sc0"> </span><span class="sc19">integer</span><span class="sc10">,</span><span class="sc0">
+                 </span><span class="sc5">user_name</span><span class="sc0"> </span><span class="sc19">text</span><span class="sc10">,</span><span class="sc0">
+                 </span><span class="sc11">email</span><span class="sc0"> </span><span class="sc19">varchar</span><span class="sc10">,</span><span class="sc0">
+                </span><span class="sc11">amount</span><span class="sc0"> </span><span class="sc19">decimal</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc5">AS</span><span class="sc0">
+$</span><span class="sc11">func</span><span class="sc0">$
+</span><span class="sc5">BEGIN</span><span class="sc0">
+   </span><span class="sc5">RETURN</span><span class="sc0"> </span><span class="sc11">QUERY</span><span class="sc0">
+    </span><span class="sc5">select</span><span class="sc0"> </span><span class="sc11">usr</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc5">user_id</span><span class="sc10">,</span><span class="sc5">concat</span><span class="sc10">(</span><span class="sc11">usr</span><span class="sc10">.</span><span class="sc11">name</span><span class="sc10">,</span><span class="sc7">' '</span><span class="sc10">,</span><span class="sc11">usr</span><span class="sc10">.</span><span class="sc11">lastname</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc5">user_name</span><span class="sc10">,</span><span class="sc0"> </span><span class="sc11">lgn</span><span class="sc10">.</span><span class="sc11">email</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">email</span><span class="sc10">,</span><span class="sc5">sum</span><span class="sc10">(</span><span class="sc11">inv</span><span class="sc10">.</span><span class="sc11">total</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">amount</span><span class="sc0">
+    </span><span class="sc5">from</span><span class="sc0"> </span><span class="sc11">tema2_user</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">usr</span><span class="sc0">
+    </span><span class="sc5">inner</span><span class="sc0"> </span><span class="sc5">join</span><span class="sc0"> </span><span class="sc11">tema2_login</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">lgn</span><span class="sc0"> </span><span class="sc5">on</span><span class="sc0"> </span><span class="sc11">lgn</span><span class="sc10">.</span><span class="sc11">fk_user_id_id</span><span class="sc10">=</span><span class="sc11">usr</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc0">
+    </span><span class="sc5">inner</span><span class="sc0"> </span><span class="sc5">join</span><span class="sc0"> </span><span class="sc11">tema2_purchases</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">pch</span><span class="sc0"> </span><span class="sc5">on</span><span class="sc0"> </span><span class="sc11">usr</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc10">=</span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">fk_user_id_id</span><span class="sc0">
+    </span><span class="sc5">inner</span><span class="sc0"> </span><span class="sc5">join</span><span class="sc0"> </span><span class="sc11">tema2_invoice</span><span class="sc0"> </span><span class="sc5">as</span><span class="sc0"> </span><span class="sc11">inv</span><span class="sc0"> </span><span class="sc5">on</span><span class="sc0"> </span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">fk_invoice_id_id</span><span class="sc10">=</span><span class="sc11">inv</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc0">
+    </span><span class="sc5">where</span><span class="sc0"> </span><span class="sc5">extract</span><span class="sc10">(</span><span class="sc19">year</span><span class="sc0"> </span><span class="sc5">from</span><span class="sc0"> </span><span class="sc11">pch</span><span class="sc10">.</span><span class="sc11">created_at</span><span class="sc10">)=</span><span class="sc5">extract</span><span class="sc10">(</span><span class="sc19">year</span><span class="sc0"> </span><span class="sc5">from</span><span class="sc0"> </span><span class="sc11">date_arg</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc5">and</span><span class="sc0"> </span><span class="sc11">inv</span><span class="sc10">.</span><span class="sc11">tax</span><span class="sc10">=</span><span class="sc11">tax_arg</span><span class="sc0">
+    </span><span class="sc5">group</span><span class="sc0"> </span><span class="sc5">by</span><span class="sc0"> </span><span class="sc11">usr</span><span class="sc10">.</span><span class="sc11">id</span><span class="sc10">,</span><span class="sc11">lgn</span><span class="sc10">.</span><span class="sc11">email</span><span class="sc10">;</span><span class="sc0">
+</span><span class="sc5">END</span><span class="sc0">
+$</span><span class="sc11">func</span><span class="sc0">$  </span><span class="sc5">LANGUAGE</span><span class="sc0"> </span><span class="sc11">plpgsql</span><span class="sc10">;</span><span class="sc0">
+
+</span><span class="sc5">SELECT</span><span class="sc0"> </span><span class="sc10">*</span><span class="sc0"> </span><span class="sc5">FROM</span><span class="sc0"> </span><span class="sc11">sales_no_tax</span><span class="sc10">(</span><span class="sc7">'2020-11-01'</span><span class="sc10">,</span><span class="sc4">0</span><span class="sc10">);</span><span class="sc0">
+
+
+
+</span></div>
+{% endblock %}

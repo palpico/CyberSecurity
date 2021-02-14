@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h3>Bienvenido, usar la navegacion para acceder a las soluciones</h3>
+  <p>Para acceder siempre es necesario iniciar sesion, se pueden crear usuarios con el siguiente comando:</p>
+  <code>docker-compose.exe -f local.yml run --rm django python manage.py createsuperuser</code>
+{% endblock %}

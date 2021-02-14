@@ -1,1 +1,3 @@
-tweepy
+# This file is expected by Heroku.
+
+-r requirements/production.txt
