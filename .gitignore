@@ -326,13 +326,13 @@ cybersecurity/media/
 
 
 .ipython/
-.env
+#.env
 
-.envs/*
+#.envs/*
 
-!.envs/.local/
+#!.envs/.local/
 
 /.github/
-/.envs/ se incluye env sin informacion confidencial unicamente para facilidad
 /notebooks/.ipynb_checkpoints/
-/.envs/
+#/.envs/
+#/envs/
