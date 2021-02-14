@@ -15,14 +15,15 @@ docker-compose.exe -f local.yml run --rm django python manage.py migrate
 #Create login user
 docker-compose.exe -f local.yml run --rm django python manage.py createsuperuser
 ```
+Una vez inicializado se puede ingresar al navegador a: http://localhost:8000/
 
 ##Tema 1 - Estadísticas de Twitter 
 
-Se creo un notebook: 
+Se creo un notebook: [Notebook](https://github.com/palpico/CyberSecurity/blob/master/notebooks/EstadisticasTwitter.ipynb)
 
 ##Tema 2 - SQL 
 
-Se crearon los procesos almacenado para Postgres: 
+Se crearon los procesos almacenado para Postgres: [SQL](https://github.com/palpico/CyberSecurity/blob/master/sql/StoredProcedures.sql) 
 
 *en caso de querer informacion de prueba se puede encontrar inserts en: 
 
@@ -38,6 +39,7 @@ Solo usuarios verificados pueden acceder, se establece un contador para bloquear
 Para un facil despliegue remoto se usa tegnologia de contenedores.
 
 #### A continuacion la descripcion del rest:
+El codigo para el rest esta en: [API](https://github.com/palpico/CyberSecurity/tree/master/cybersecurity/tema3/api)
 
 | Resource          | GET                                   | POST | PUT | DELETE |
 | ----------------- | ------------------------------------- | ---- | --- | ------ |
